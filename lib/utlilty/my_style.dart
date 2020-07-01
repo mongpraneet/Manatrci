@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 
-
-
-
 class MyStyle {
+  Color mainColor = Colors.pink;
+  Color darkColor = Colors.blue.shade800;
+  Color redColor = Colors.red.shade500;
 
-Color mainColor = Colors.pink;
-Color darkColor = Colors.blue.shade800;
-Color redColor =  Colors.red.shade500;
-
+  InputDecoration myInputDecoration(String string) {
+    return InputDecoration(
+      labelText: string,
+      border: OutlineInputBorder(),
+    );
+  }
 
   Text showTextH1(String string) => Text(
         string,
