@@ -6,6 +6,7 @@ import 'package:ohrci/page/regeister.dart';
 import 'package:ohrci/utlilty/my_api.dart';
 import 'package:ohrci/utlilty/my_style.dart';
 import 'package:ohrci/utlilty/normal_dialog.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Authen extends StatefulWidget {
   @override
@@ -101,10 +102,10 @@ class _AuthenState extends State<Authen> {
         print(model.type.toString());
         switch (model.type.toString()) {
           case 'User':
-            routeTo(MainUser());
+            routeTo(MainUser(), model);
             break;
           case 'Shop':
-            routeTo(MainShhop());
+            routeTo(MainShhop(), model);
             break;
           default:
         }
@@ -114,7 +115,13 @@ class _AuthenState extends State<Authen> {
     }
   }
 
-  void routeTo(Widget widget) {
+  Future<Null> routeTo(Widget widget, UserModel model) async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    preferences.setString('id', model.id);
+    preferences.setString('Name', model.name);
+    preferences.setString('Type', model.type);
+
+
     MaterialPageRoute route = MaterialPageRoute(
       builder: (context) => widget,
     );

@@ -10,7 +10,7 @@ class Register extends StatefulWidget {
 }
 
 class _RegisterState extends State<Register> {
-  List<String> types = ['User', 'Shoper'];
+  List<String> types = ['User', 'Shop'];
   String type, name, user, password;
 
   Widget userForm() => Container(
