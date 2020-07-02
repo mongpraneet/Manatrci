@@ -98,6 +98,7 @@ class _AuthenState extends State<Authen> {
       normalDioalg(context, 'ไม่มี $user คนนี้ในฐานข้อมูล');
     } else {
       if (password == model.password) {
+        print(model.type.toString());
         switch (model.type.toString()) {
           case 'User':
             routeTo(MainUser());
