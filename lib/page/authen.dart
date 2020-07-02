@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:ohrci/models/user_model.dart';
+import 'package:ohrci/page/main_shop.dart';
+import 'package:ohrci/page/main_user.dart';
 import 'package:ohrci/page/regeister.dart';
+import 'package:ohrci/utlilty/my_api.dart';
 import 'package:ohrci/utlilty/my_style.dart';
+import 'package:ohrci/utlilty/normal_dialog.dart';
 
 class Authen extends StatefulWidget {
   @override
@@ -8,6 +13,8 @@ class Authen extends StatefulWidget {
 }
 
 class _AuthenState extends State<Authen> {
+  String user, password;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,7 +40,16 @@ class _AuthenState extends State<Authen> {
     return Container(
       width: 250,
       child: RaisedButton(
-        onPressed: () {},
+        onPressed: () {
+          if (user == null ||
+              user.isEmpty ||
+              password == null ||
+              password.isEmpty) {
+            normalDioalg(context, 'กรุณากรอก ทุกช่อง');
+          } else {
+            checkAuthen();
+          }
+        },
         child: Text('Login'),
         color: Colors.red,
         textColor: Colors.white,
@@ -48,7 +64,8 @@ class _AuthenState extends State<Authen> {
           onPressed: () {
             MaterialPageRoute route = MaterialPageRoute(
               builder: (context) => Register(),
-            );Navigator.push(context, route);
+            );
+            Navigator.push(context, route);
           },
           child: Text(
             'New Register',
@@ -60,6 +77,7 @@ class _AuthenState extends State<Authen> {
   Widget userForm() => Container(
         margin: EdgeInsets.only(top: 16),
         child: TextField(
+          onChanged: (valuse) => user = valuse.trim(),
           decoration: MyStyle().myInputDecoration('User :'),
         ),
         width: 250,
@@ -68,8 +86,37 @@ class _AuthenState extends State<Authen> {
   Widget passwordForm() => Container(
         margin: EdgeInsets.only(top: 16),
         child: TextField(
+          onChanged: (values) => password = values.trim(),
           decoration: MyStyle().myInputDecoration('Password :'),
         ),
         width: 250,
       );
+
+  Future<Null> checkAuthen() async {
+    UserModel model = await MyAPI().getUserWhereUser(user);
+    if (model == null) {
+      normalDioalg(context, 'ไม่มี $user คนนี้ในฐานข้อมูล');
+    } else {
+      if (password == model.password) {
+        switch (model.type.toString()) {
+          case 'User':
+            routeTo(MainUser());
+            break;
+          case 'Shop':
+            routeTo(MainShhop());
+            break;
+          default:
+        }
+      } else {
+        normalDioalg(context, 'Password False');
+      }
+    }
+  }
+
+  void routeTo(Widget widget) {
+    MaterialPageRoute route = MaterialPageRoute(
+      builder: (context) => widget,
+    );
+    Navigator.pushAndRemoveUntil(context, route, (route) => false);
+  }
 }
