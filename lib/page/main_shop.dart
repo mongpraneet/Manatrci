@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:ohrci/widget/show_info_shop.dart';
+import 'package:ohrci/widget/show_my_order_shop.dart';
+import 'package:ohrci/widget/show_my_product.dart';
 
 class MainShhop extends StatefulWidget {
   @override
@@ -6,13 +9,16 @@ class MainShhop extends StatefulWidget {
 }
 
 class _MainShhopState extends State<MainShhop> {
+  Widget currentWidget = ShowMyOrdrShop();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       drawer: showDraw(),
       appBar: AppBar(
-        title: Text('Welcom shop'),
+        title: Text('Welcom shop123'),
       ),
+      body: currentWidget,
     );
   }
 
@@ -35,24 +41,33 @@ class _MainShhopState extends State<MainShhop> {
         subtitle: Text('ดูรายการสั่งสินค้า'),
         onTap: () {
           Navigator.pop(context);
+          setState(() {
+            currentWidget = ShowMyOrdrShop();
+          });
         },
       );
 
-       ListTile menuMyProduct() => ListTile(
+  ListTile menuMyProduct() => ListTile(
         leading: Icon(Icons.looks_one),
-        title: Text('Show My Order'),
+        title: Text('Show Product'),
         subtitle: Text('สินค้า'),
         onTap: () {
           Navigator.pop(context);
+          setState(() {
+            currentWidget = ShowMyProduct();
+          });
         },
       );
 
-       ListTile menuMyInformation() => ListTile(
+  ListTile menuMyInformation() => ListTile(
         leading: Icon(Icons.looks_one),
-        title: Text('Show My Order'),
+        title: Text('Show Informate'),
         subtitle: Text('รายละเอียด'),
         onTap: () {
           Navigator.pop(context);
+          setState(() {
+            currentWidget = ShowInfoShop();
+          });
         },
       );
 }
