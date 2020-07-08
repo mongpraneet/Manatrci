@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:ohrci/models/user_model.dart';
 import 'package:ohrci/page/main_shop.dart';
 import 'package:ohrci/page/main_user.dart';
-import 'package:ohrci/page/regeister.dart';
-import 'package:ohrci/utlilty/my_api.dart';
-import 'package:ohrci/utlilty/my_style.dart';
-import 'package:ohrci/utlilty/normal_dialog.dart';
+import 'package:ohrci/page/register.dart';
+import 'package:ohrci/utility/my_api.dart';
+import 'package:ohrci/utility/my_style.dart';
+import 'package:ohrci/utility/normal_dialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Authen extends StatefulWidget {
@@ -15,25 +15,65 @@ class Authen extends StatefulWidget {
 
 class _AuthenState extends State<Authen> {
   String user, password;
+  bool status = true;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    // สั่งให้ทำงานก่อน build
+    super.initState();
+    findLogin();
+  }
+
+  Future<Null> findLogin() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    String typeLogin = preferences.getString('Type');
+    print('typeLogin = $typeLogin');
+
+    if (typeLogin == null || typeLogin.isEmpty) {
+      setState(() {
+        status = false;
+      });
+    } else {
+      switch (typeLogin) {
+        case 'User':
+          routeToService(MainUser());
+          break;
+        case 'Shop':
+          routeToService(MainShop());
+          break;
+        default:
+      }
+    }
+  }
+
+  void routeToService(Widget widget) {
+    MaterialPageRoute route = MaterialPageRoute(
+      builder: (context) => widget,
+    );
+    Navigator.pushAndRemoveUntil(context, route, (route) => false);
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              MyStyle().showLogo(),
-              MyStyle().showTextH1('manat mongpraneet'),
-              userForm(),
-              passwordForm(),
-              loginButton(),
-              regitsterButton(),
-            ],
-          ),
-        ),
-      ),
+      body: status
+          ? MyStyle().showProgress()
+          : Center(
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    MyStyle().showLogo(),
+                    MyStyle().showTextH1('Royal Can'),
+                    userForm(),
+                    passwordForm(),
+                    loginButton(),
+                    registerButton(),
+                  ],
+                ),
+              ),
+            ),
     );
   }
 
@@ -46,71 +86,69 @@ class _AuthenState extends State<Authen> {
               user.isEmpty ||
               password == null ||
               password.isEmpty) {
-            normalDioalg(context, 'กรุณากรอก ทุกช่อง');
+            normalDialog(context, 'กรุณากรอก User และ Password');
           } else {
             checkAuthen();
           }
         },
         child: Text('Login'),
-        color: Colors.red,
-        textColor: Colors.white,
       ),
     );
   }
 
-  Container regitsterButton() {
+  Container registerButton() {
     return Container(
       width: 250,
       child: FlatButton(
-          onPressed: () {
-            MaterialPageRoute route = MaterialPageRoute(
-              builder: (context) => Register(),
-            );
-            Navigator.push(context, route);
-          },
-          child: Text(
-            'New Register',
-            style: TextStyle(color: Colors.pink),
-          )),
+        onPressed: () {
+          MaterialPageRoute route = MaterialPageRoute(
+            builder: (context) => Register(),
+          );
+          Navigator.push(context, route);
+        },
+        child: Text(
+          'New Register',
+          style: TextStyle(color: Colors.pink),
+        ),
+      ),
     );
   }
 
   Widget userForm() => Container(
         margin: EdgeInsets.only(top: 16),
+        width: 250,
         child: TextField(
-          onChanged: (valuse) => user = valuse.trim(),
+          onChanged: (value) => user = value.trim(),
           decoration: MyStyle().myInputDecoration('User :'),
         ),
-        width: 250,
       );
 
   Widget passwordForm() => Container(
         margin: EdgeInsets.only(top: 16),
+        width: 250,
         child: TextField(
-          onChanged: (values) => password = values.trim(),
+          onChanged: (value) => password = value.trim(),
           decoration: MyStyle().myInputDecoration('Password :'),
         ),
-        width: 250,
       );
 
   Future<Null> checkAuthen() async {
     UserModel model = await MyAPI().getUserWhereUser(user);
     if (model == null) {
-      normalDioalg(context, 'ไม่มี $user คนนี้ในฐานข้อมูล');
+      normalDialog(context, 'ไม่มี $user ในระบบ');
     } else {
       if (password == model.password) {
-        print(model.type.toString());
-        switch (model.type.toString()) {
+        switch (model.type) {
           case 'User':
             routeTo(MainUser(), model);
             break;
           case 'Shop':
-            routeTo(MainShhop(), model);
+            routeTo(MainShop(), model);
             break;
           default:
         }
       } else {
-        normalDioalg(context, 'Password False');
+        normalDialog(context, 'password ผิด');
       }
     }
   }
@@ -120,7 +158,7 @@ class _AuthenState extends State<Authen> {
     preferences.setString('id', model.id);
     preferences.setString('Name', model.name);
     preferences.setString('Type', model.type);
-
+    // ผังค่า login ของ user
 
     MaterialPageRoute route = MaterialPageRoute(
       builder: (context) => widget,

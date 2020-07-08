@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-class ShowMyOrdrShop extends StatefulWidget {
+class ShowMyOrderShop extends StatefulWidget {
   @override
-  _ShowMyOrdrShopState createState() => _ShowMyOrdrShopState();
+  _ShowMyOrderShopState createState() => _ShowMyOrderShopState();
 }
 
-class _ShowMyOrdrShopState extends State<ShowMyOrdrShop> {
+class _ShowMyOrderShopState extends State<ShowMyOrderShop> {
   @override
   Widget build(BuildContext context) {
     return Text('This is My Order');

@@ -1,8 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:ohrci/utlilty/my_constant.dart';
-import 'package:ohrci/utlilty/my_style.dart';
-import 'package:ohrci/utlilty/normal_dialog.dart';
+import 'package:ohrci/utility/my_constant.dart';
+import 'package:ohrci/utility/my_style.dart';
+import 'package:ohrci/utility/normal_dialog.dart';
 
 class Register extends StatefulWidget {
   @override
@@ -10,34 +10,34 @@ class Register extends StatefulWidget {
 }
 
 class _RegisterState extends State<Register> {
-  List<String> types = ['User', 'Shop'];
+  List<String> types = ['User', 'Shop']; // array
   String type, name, user, password;
 
   Widget userForm() => Container(
         margin: EdgeInsets.only(top: 16),
+        width: 250,
         child: TextField(
           onChanged: (value) => user = value.trim(),
           decoration: MyStyle().myInputDecoration('User :'),
         ),
-        width: 250,
       );
 
   Widget passwordForm() => Container(
         margin: EdgeInsets.only(top: 16),
+        width: 250,
         child: TextField(
           onChanged: (value) => password = value.trim(),
           decoration: MyStyle().myInputDecoration('Password :'),
         ),
-        width: 250,
       );
 
   Widget nameForm() => Container(
         margin: EdgeInsets.only(top: 16),
+        width: 250,
         child: TextField(
           onChanged: (value) => name = value.trim(),
           decoration: MyStyle().myInputDecoration('Name :'),
         ),
-        width: 250,
       );
 
   @override
@@ -51,11 +51,12 @@ class _RegisterState extends State<Register> {
               user.isEmpty ||
               password == null ||
               password.isEmpty) {
-            normalDioalg(context, 'Plases Fill Every Blank');
+            normalDialog(context, 'Please Fill Every Blank');
           } else if (type == null) {
-            normalDioalg(context, 'โปรดเลือกชนิดของสมาชิก :(');
+            normalDialog(context, 'โปรดเลือกชนิดของสมาชิก');
           } else {
             checkUserThread();
+
             // registerThread();
           }
         },
@@ -88,7 +89,7 @@ class _RegisterState extends State<Register> {
                 ),
               )
               .toList(),
-          hint: Text('Choost Type'),
+          hint: Text('Choose Type'),
           value: type,
           onChanged: (value) {
             setState(() {
@@ -101,17 +102,15 @@ class _RegisterState extends State<Register> {
   Future<Null> registerThread() async {
     DateTime dateTime = DateTime.now();
     String dateString = dateTime.toString();
-    print('dateString =  $dateString');
-
+    //print('dateString = $dateString');
     String urlAPI =
-        '${MyConstant().domain}/RCI/addUserUng.php?isAdd=true&Name=$name&User=$user&Password=$password&CreateDate=$dateString&Type=$type';
-
+        '${MyConstant().domain}/RCI/addUserOne.php?isAdd=true&Name=$name&User=$user&Password=$password&CreateDate=$dateString&Type=$type';
     Response response = await Dio().get(urlAPI);
-    print('respone=$response');
+
     if (response.toString() == 'true') {
       Navigator.pop(context);
     } else {
-      normalDioalg(context, 'กรุณาลองใหม่ อีกครั้งครับ');
+      normalDialog(context, 'กรุณาลองใหม่อีกครั้ง');
     }
   }
 
@@ -119,13 +118,11 @@ class _RegisterState extends State<Register> {
     String url =
         '${MyConstant().domain}/RCI/getUserWhereUserUng.php?isAdd=true&User=$user';
     Response response = await Dio().get(url);
-    print('xxx=$response');
-
+    // print('response = $response');
     if (response.toString() == 'null') {
       registerThread();
     } else {
-      normalDioalg(
-          context, '$user มีคนอืนใช้ไปแล้วนะครับ กรุณาเปลีวน User ใหม่');
+      normalDialog(context, '$user มีคนใช้แล้ว กรุณาเปลี่ยน User ใหม่');
     }
   }
 }

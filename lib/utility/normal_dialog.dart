@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-Future<Null> normalDioalg(BuildContext context, String string) async {
+Future<Null> normalDialog(BuildContext context, String string) async {
   showDialog(
     context: context,
     builder: (context) => SimpleDialog(

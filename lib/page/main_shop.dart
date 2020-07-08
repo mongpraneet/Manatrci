@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:ohrci/utility/my_style.dart';
 import 'package:ohrci/widget/show_info_shop.dart';
 import 'package:ohrci/widget/show_my_order_shop.dart';
 import 'package:ohrci/widget/show_my_product.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class MainShhop extends StatefulWidget {
+class MainShop extends StatefulWidget {
   @override
-  _MainShhopState createState() => _MainShhopState();
+  _MainShopState createState() => _MainShopState();
 }
 
-class _MainShhopState extends State<MainShhop> {
-  Widget currentWidget = ShowMyOrdrShop();
+class _MainShopState extends State<MainShop> {
+
+  Widget currentWidget = ShowMyOrderShop();
   String idShop, nameShop;
 
   @override
@@ -20,7 +22,7 @@ class _MainShhopState extends State<MainShhop> {
     findShop();
   }
 
-  Future<Null> findShop() async {
+  Future<Null> findShop()async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     setState(() {
       idShop = preferences.getString('id');
@@ -31,43 +33,47 @@ class _MainShhopState extends State<MainShhop> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: showDraw(),
+      drawer: showDrawer(),
       appBar: AppBar(
-        title: Text(nameShop == null ? 'Welcom shop123' : 'ร้าน $nameShop'),
+        title: Text(nameShop == null ? 'Welcome Shop' : 'ร้าน $nameShop' ),
       ),
       body: currentWidget,
     );
   }
 
-  Drawer showDraw() {
+  Drawer showDrawer() {
     return Drawer(
-      child: Column(
+      child: Stack(
         children: <Widget>[
-          UserAccountsDrawerHeader(accountName: null, accountEmail: null),
-          menuMyOuder(),
-          menuMyProduct(),
-          menuMyInformation(),
+          Column(
+            children: <Widget>[
+              UserAccountsDrawerHeader(accountName: null, accountEmail: null),
+              menuMyOrder(),
+              menuMyProduct(),
+              menuMyInformation()
+            ],
+          ),MyStyle().menuSignOut(context),
         ],
       ),
     );
   }
 
-  ListTile menuMyOuder() => ListTile(
+  ListTile menuMyOrder() => ListTile(
         leading: Icon(Icons.looks_one),
-        title: Text('Show My Order'),
-        subtitle: Text('ดูรายการสั่งสินค้า'),
+        title: Text('Show My Orders'),
+        subtitle: Text('ดูรายการสั่งของ'),
         onTap: () {
           Navigator.pop(context);
           setState(() {
-            currentWidget = ShowMyOrdrShop();
+            currentWidget = ShowMyOrderShop();
           });
         },
       );
 
   ListTile menuMyProduct() => ListTile(
-        leading: Icon(Icons.looks_one),
-        title: Text('Show Product'),
-        subtitle: Text('สินค้า'),
+        leading: Icon(Icons.looks_two),
+        title: Text('Show My Products'),
+        subtitle: Text('ดูรายการสินค้า'),
         onTap: () {
           Navigator.pop(context);
           setState(() {
@@ -77,15 +83,13 @@ class _MainShhopState extends State<MainShhop> {
       );
 
   ListTile menuMyInformation() => ListTile(
-        leading: Icon(Icons.looks_one),
-        title: Text('Show Informate'),
-        subtitle: Text('รายละเอียด'),
+        leading: Icon(Icons.looks_3),
+        title: Text('Show My Information'),
+        subtitle: Text('ดูข้อมูลร้านค้า'),
         onTap: () {
           Navigator.pop(context);
           setState(() {
-            currentWidget = ShowInfoShop(
-              idShop: idShop,
-            );
+            currentWidget = ShowInfoShop(idShop: idShop,);
           });
         },
       );
