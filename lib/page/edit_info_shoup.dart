@@ -48,9 +48,53 @@ class _EditInfoShopState extends State<EditInfoShop> {
             showDate(),
             addressForm(),
             phoneForm(),
+            genderGroup(),
           ],
         ),
       ),
+    );
+  }
+
+  Container genderGroup() => Container(
+          child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: <Widget>[
+          maleRadio(),
+          feMaleRadio(),
+        ],
+      ));
+
+  Row maleRadio() {
+    return Row(
+      children: <Widget>[
+        Radio(
+          value: 'Male',
+          groupValue: gender,
+          onChanged: (value) {
+            setState(() {
+              gender = value;
+            });
+          },
+        ),
+        Text('ชาย'),
+      ],
+    );
+  }
+
+  Row feMaleRadio() {
+    return Row(
+      children: <Widget>[
+        Radio(
+          value: 'Female',
+          groupValue: gender,
+          onChanged: (value) {
+            setState(() {
+              gender = value;
+            });
+          },
+        ),
+        Text('หญิง'),
+      ],
     );
   }
 
