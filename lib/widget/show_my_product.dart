@@ -90,7 +90,27 @@ class _ShowMyProductState extends State<ShowMyProduct> {
                               fit: BoxFit.cover,
                             ),
                           ),
-                          Text(productModels[index].name),
+                          Container(
+                            padding: EdgeInsets.all(8),
+                            width: MediaQuery.of(context).size.width * 0.5,
+                            height: MediaQuery.of(context).size.width * 0.4,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: <Widget>[
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: <Widget>[
+                                    MyStyle()
+                                        .showTextH2(productModels[index].name),
+                                  ],
+                                ),
+                                MyStyle().showTextH1(
+                                    'ราคา ${productModels[index].price} บาท'),
+                                MyStyle()
+                                    .showTextH2(productModels[index].detail),
+                              ],
+                            ),
+                          ),
                         ],
                       ),
                     ),
