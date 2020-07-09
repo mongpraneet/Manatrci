@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:ohrci/models/user_model.dart';
+import 'package:ohrci/utility/my_constant.dart';
 import 'package:ohrci/utility/my_style.dart';
 
 class EditInfoShop extends StatefulWidget {
@@ -14,6 +15,7 @@ class EditInfoShop extends StatefulWidget {
 class _EditInfoShopState extends State<EditInfoShop> {
   UserModel userModel;
   String dateTimeString, gender, educateString, address, phone, id;
+  List<String> educate;
 
   @override
   void initState() {
@@ -25,6 +27,8 @@ class _EditInfoShopState extends State<EditInfoShop> {
     address = userModel.address;
     phone = userModel.phone;
     id = userModel.id;
+
+    educate = MyConstant().educate;
 
     findCurrentTime();
   }
@@ -49,11 +53,32 @@ class _EditInfoShopState extends State<EditInfoShop> {
             addressForm(),
             phoneForm(),
             genderGroup(),
+            eductionDropdown(),
           ],
         ),
       ),
     );
   }
+
+  Container eductionDropdown() => Container(
+        width: 250,
+        child: DropdownButton<String>(
+          value: educateString,
+          items: educate
+              .map(
+                (e) => DropdownMenuItem(
+                  child: Text(e),
+                  value: e,
+                ),
+              )
+              .toList(),
+          onChanged: (value) {
+            setState(() {
+              educateString = value;
+            });
+          },
+        ),
+      );
 
   Container genderGroup() => Container(
           child: Row(

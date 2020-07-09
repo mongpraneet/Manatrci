@@ -13,19 +13,15 @@ class AddInfoShop extends StatefulWidget {
 
 class _AddInfoShopState extends State<AddInfoShop> {
   String dateTimeString, gender, educateString, address, phone, id;
-  List<String> educate = [
-    'ต่ำกว่า ป.6',
-    'มัธยมต้น',
-    'มัธยมปลาย',
-    'ป.ตรี',
-    'ป.โท',
-    'ป.เอก'
-  ];
+
+  List<String> educate;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+
+    educate = MyConstant().educate;
     findId();
     findCurrentTime();
   }
@@ -175,15 +171,15 @@ class _AddInfoShopState extends State<AddInfoShop> {
       );
 
   Future<Null> editvalueOnMySQl() async {
-    String url ='${MyConstant().domain}/RCI/editUserWhereIdUng.php?isAdd=true&id=$id&CreateDate=$dateTimeString&Address=$address&Phone=$phone&Gendel=$gender&Education=$educateString';
+    String url =
+        '${MyConstant().domain}/RCI/editUserWhereIdUng.php?isAdd=true&id=$id&CreateDate=$dateTimeString&Address=$address&Phone=$phone&Gendel=$gender&Education=$educateString';
 
     await Dio().get(url).then((value) {
-      if (value.toString()== 'true') {
+      if (value.toString() == 'true') {
         Navigator.pop(context);
       } else {
         normalDialog(context, 'กรุณาลองใหม่ครับ');
       }
     });
-
   }
 }
