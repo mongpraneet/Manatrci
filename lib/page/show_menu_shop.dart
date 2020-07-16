@@ -3,9 +3,13 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:ohrci/models/product_model.dart';
+import 'package:ohrci/models/sqlite_model.dart';
 import 'package:ohrci/models/user_model.dart';
 import 'package:ohrci/utility/my_constant.dart';
 import 'package:ohrci/utility/my_style.dart';
+import 'package:ohrci/utility/normal_dialog.dart';
+import 'package:ohrci/utility/normal_toast.dart';
+import 'package:ohrci/utility/sqlite_helper.dart';
 
 class ShowMenuShop extends StatefulWidget {
   final UserModel userModel;
@@ -199,6 +203,37 @@ class _ShowMenuShopState extends State<ShowMenuShop> {
     String sumString = sum.toString();
 
     print('idshoup = $idShop, name=$nameShop, idProduct=$idProuct');
-    print('name=$nameProdcut, amunt=$amuntString, sum=$sumString');
+    //print('name=$nameProdcut, amunt=$amuntString, sum=$sumString');
+
+    Map<String, dynamic> map = Map();
+    map['idShop'] = idShop;
+    map['nameShop'] = nameShop;
+    map['idProduct'] = idProuct;
+    map['nameProduct'] = nameProdcut;
+    map['price'] = price;
+    map['amountString'] = amuntString;
+    map['sumString'] = sumString;
+
+    SqliteModel sqliteModel = SqliteModel.fromJson(map);
+
+    List<SqliteModel> resultFromSQLite =
+        await SQLiteHelper().readerDataFromSQLite();
+    print('resultFrom==> ${resultFromSQLite.length}');
+
+    if (resultFromSQLite.length == 0) {
+      await SQLiteHelper().insertDateToSQLite(sqliteModel).then((value) {
+        normailToast('Add Ordr Scess');
+      });
+    } else {
+      String currentIdShop = resultFromSQLite[0].idShop;
+      print('currentIdShop ==> $currentIdShop');
+      if (idShop == currentIdShop) {
+        await SQLiteHelper().insertDateToSQLite(sqliteModel).then((value) {
+          normailToast('Add Ordr Scess');
+        });
+      } else {
+        normalDialog(context, 'กรุณาซื่้อจากร้าน ${resultFromSQLite[0].nameShop}');
+      }
+    }
   }
 }

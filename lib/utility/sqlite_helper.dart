@@ -23,7 +23,7 @@ class SQLiteHelper {
   Future<Null> initDatabase() async {
     await openDatabase(join(await getDatabasesPath(), nameDatebase),
         onCreate: (db, version) => db.execute(
-            'CREATE TABLE $nameTable ($column_id INTEGER PRIMARY KEY, $column_idShop TEXT, $column_nameShop TEXT, $column_idProduct TEXT, $column_nameShop TEXT, $column_price TEXT, $column_amountString TEXT, $column_sumString TEXT)'),
+            'CREATE TABLE $nameTable ($column_id INTEGER PRIMARY KEY, $column_idShop TEXT, $column_nameShop TEXT, $column_idProduct TEXT, $column_nameProduct TEXT, $column_price TEXT, $column_amountString TEXT, $column_sumString TEXT)'),
         version: version);
   }
 
@@ -47,4 +47,19 @@ class SQLiteHelper {
       print('e insertdata ==> ${e.toString()}');
     }
   }
+
+  Future<List<SqliteModel>> readerDataFromSQLite() async {
+    Database database = await connectedDatebase();
+    List<SqliteModel> sqliteModels = List();
+
+    List<Map<String, dynamic>> listMaps = await database.query(nameTable);
+
+    for (var map in listMaps) {
+      SqliteModel model = SqliteModel.fromJson(map);
+      sqliteModels.add(model);
+    }
+    return sqliteModels;
+  }
+
+
 }
